@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Olivia Carter — Hinge</title>
+<title>John Doe — Hinge</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,7 +17,6 @@
     --accent: #6c3fa3;
     --accent-light: #e8dff5;
     --border: #e8e3dc;
-    --rose: #d4756b;
   }
 
   body {
@@ -125,14 +124,10 @@
     font-weight: 500;
     cursor: pointer;
     transition: background 0.2s;
+    font-family: 'DM Sans', sans-serif;
   }
   .play-btn:hover { background: rgba(255,255,255,0.28); }
-
-  .play-btn svg {
-    width: 14px;
-    height: 14px;
-    fill: #fff;
-  }
+  .play-btn svg { width: 14px; height: 14px; fill: #fff; }
 
   /* PROMPT CARD */
   .prompt-card {
@@ -208,17 +203,6 @@
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.01em;
-  }
-
-  /* DIVIDER */
-  .section-divider {
-    text-align: center;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-light);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 6px 0 2px;
   }
 
   /* ACTION BAR */
@@ -299,16 +283,17 @@
 <body>
 <div class="phone-shell">
 
-<div class="name-header">
-    <h1>Olivia Carter</h1>
-    <div class="name-sub">27 · Nashville, TN</div>
+  <!-- NAME HEADER -->
+  <div class="name-header">
+    <h1>John Doe</h1>
+    <div class="name-sub">26 · San Francisco, CA</div>
   </div>
 
   <div class="profile-scroll">
 
     <!-- VIDEO CARD -->
     <div class="video-card card" id="videoCard" onclick="toggleVideo()" style="cursor:pointer;">
-      <video id="profileVideo" playsinline preload="metadata" poster="olivia_poster.jpg">
+      <video id="profileVideo" playsinline preload="metadata" poster="poster.jpg">
         <source src="profile.mp4" type="video/mp4">
       </video>
       <div class="video-overlay">
@@ -326,19 +311,19 @@
         <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
         </svg>
-        <span>27 · Woman</span>
+        <span>26 · Man</span>
       </div>
       <div class="info-row">
         <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4M2 11h20"/>
         </svg>
-        <span>Marketing Specialist · Lifestyle Brand</span>
+        <span>Programmer · App Developer</span>
       </div>
       <div class="info-row">
         <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
         </svg>
-        <span>Nashville, TN</span>
+        <span>San Francisco, CA</span>
       </div>
       <div class="info-row">
         <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -350,7 +335,7 @@
         <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M12 22s-8-5-8-11a8 8 0 0 1 16 0c0 6-8 11-8 11z"/>
         </svg>
-        <span>5'6''</span>
+        <span>5'10''</span>
       </div>
     </div>
 
@@ -360,14 +345,12 @@
         <div class="prompt-label">Interests</div>
       </div>
       <div class="tag-row" style="padding-top: 0;">
-        <span class="tag">🍳 Baking</span>
-        <span class="tag">✈️ Travel</span>
-        <span class="tag">🎵 Live Music</span>
-        <span class="tag">🧘 Pilates</span>
-        <span class="tag">🍽️ Foodie</span>
-        <span class="tag">🌊 Beach trips</span>
-        <span class="tag">🎪 Festivals</span>
-        <span class="tag">🏠 Interior design</span>
+        <span class="tag">☕ Coffee shops</span>
+        <span class="tag">🚗 Traveling</span>
+        <span class="tag">🥾 Hiking</span>
+        <span class="tag">🏔️ Mountains</span>
+        <span class="tag">🌿 Outdoors</span>
+        <span class="tag">🍳 Cooking</span>
       </div>
       <div style="padding-bottom: 12px;"></div>
     </div>
@@ -375,29 +358,31 @@
     <!-- PROMPT 1 -->
     <div class="card prompt-card">
       <div class="prompt-label">My friends describe me as</div>
-      <div class="prompt-answer">Warm, expressive, and the one who always has a plan.</div>
+      <div class="prompt-answer">Fun and always the spark that turns a quiet moment into something unforgettable.</div>
     </div>
+
     <!-- PROMPT 2 -->
     <div class="card prompt-card">
-      <div class="prompt-label">On a typical week you'll find me</div>
-      <div class="prompt-answer">At pilates, scouting a new brunch spot, planning the next trip, or at a cozy live music show.</div>
+      <div class="prompt-label">A good weekend looks like</div>
+      <div class="prompt-answer">Late nights, loud music, chasing new experiences, and surrounding myself with people who bring real energy.</div>
     </div>
+
     <!-- PROMPT 3 -->
     <div class="card prompt-card">
-      <div class="prompt-label">I go crazy for</div>
-      <div class="prompt-answer">A great new restaurant, weekend beach trips, baking something ambitious, and intimate acoustic sets that feel like a secret.</div>
+      <div class="prompt-label">On a typical week you'll find me</div>
+      <div class="prompt-answer">Catching a live show, wandering through a busy city, finding a great late-night food spot, or hopping on a last-minute trip somewhere new.</div>
     </div>
 
     <!-- GREEN FLAGS -->
     <div class="card prompt-card">
       <div class="prompt-label">Green flags I look for</div>
-      <div class="prompt-answer small">Someone warm, genuinely engaging, and emotionally available. Communication is everything to me — and so is shared enthusiasm for life.</div>
+      <div class="prompt-answer small">Someone grounded, emotionally stable, and who genuinely enjoys being outside. I'm drawn to people who find meaning in shared experiences over loud social scenes.</div>
     </div>
 
-    <!-- DATING ME WILL LOOK LIKE -->
+    <!-- DATING ME -->
     <div class="card prompt-card">
       <div class="prompt-label">Dating me will look like</div>
-      <div class="prompt-answer small">Farmers market Saturdays, spontaneous road trips, cooking dinner together with good music on, and being each other's biggest cheerleader.</div>
+      <div class="prompt-answer small">Morning hikes, cooking dinner together, low-key brewery evenings, and road trips with no strict itinerary. Steady, real, and easy to be around.</div>
     </div>
 
     <div style="height: 70px;"></div>
@@ -410,7 +395,7 @@
     </div>
     <button class="action-like">
       <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-      Like Olivia Carter
+      Like John Doe
     </button>
     <div class="action-star">
       <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
