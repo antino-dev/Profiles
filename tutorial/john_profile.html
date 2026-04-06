@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ethan Bennett — Hinge</title>
+<title>John Doe — Hinge</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -22,6 +22,7 @@
   .card { background: var(--card); border-radius: 22px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
   .video-card { position: relative; border-radius: 22px; overflow: hidden; background: #111; aspect-ratio: 1/1; width: 100%; }
   .video-card video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .video-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .video-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 80px 24px 24px; background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%); }
   .video-label { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.75); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
   .play-btn { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.18); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 11px 22px; border-radius: 50px; font-size: 16px; font-weight: 500; cursor: pointer; transition: background 0.2s; font-family: 'DM Sans', sans-serif; }
@@ -53,14 +54,15 @@
 <body>
 <div class="desktop-shell">
   <div class="name-header">
-    <h1>Ethan Bennett</h1>
-    <div class="name-sub">29 · Denver, CO</div>
+    <h1>John Doe</h1>
+    <div class="name-sub">26 · San Francisco, CA</div>
   </div>
   <div class="profile-grid">
     <div class="col-left">
+
       <div class="video-card card" id="videoCard" onclick="toggleVideo()" style="cursor:pointer;">
-        <video id="profileVideo" playsinline preload="metadata" poster="ethan_poster.jpg">
-          <source src="ethan_profile.mp4" type="video/mp4">
+        <video id="profileVideo" playsinline preload="metadata" poster="john_poster.jpg">
+          <source src="john_profile.mp4" type="video/mp4">
         </video>
         <div class="video-overlay">
           <div class="video-label">My vibe</div>
@@ -70,18 +72,19 @@
           </button>
         </div>
       </div>
+
       <div class="info-strip">
         <div class="info-row">
           <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          <span>29 · Man</span>
+          <span>26 · Man</span>
         </div>
         <div class="info-row">
           <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4M2 11h20"/></svg>
-          <span>Mechanical Engineer · Aerospace</span>
+          <span>Programmer · App Developer</span>
         </div>
         <div class="info-row">
           <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-          <span>Denver, CO</span>
+          <span>San Francisco, CA</span>
         </div>
         <div class="info-row">
           <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -89,44 +92,52 @@
         </div>
         <div class="info-row">
           <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s-8-5-8-11a8 8 0 0 1 16 0c0 6-8 11-8 11z"/></svg>
-          <span>5'11''</span>
+          <span>5'10''</span>
         </div>
       </div>
+
       <div class="tag-card">
         <div class="prompt-label">Interests</div>
         <div class="tag-row">
-          <span class="tag">🥾 Hiking</span>
-          <span class="tag">⚽ Soccer</span>
-          <span class="tag">🍺 Breweries</span>
-          <span class="tag">🍳 Cooking</span>
-          <span class="tag">🚗 Road trips</span>
-          <span class="tag">☕ Coffee shops</span>
-          <span class="tag">🏔️ Mountains</span>
-          <span class="tag">🌿 Outdoors</span>
+          <span class="tag">🎵 Live Music</span>
+          <span class="tag">💻 Building Apps</span>
+          <span class="tag">🌃 Late Nights</span>
+          <span class="tag">🏄 Surfing</span>
+          <span class="tag">🍜 Ramen runs</span>
+          <span class="tag">🎮 Gaming</span>
+          <span class="tag">🚀 Startups</span>
+          <span class="tag">🛣️ Road trips</span>
         </div>
       </div>
+
     </div>
     <div class="col-right">
+
       <div class="card prompt-card">
         <div class="prompt-label">My friends describe me as</div>
-        <div class="prompt-answer">Thoughtful, calm, and the one who actually shows up when it counts.</div>
+        <div class="prompt-answer">The one who texts the group at 11pm with a plan — and everyone actually shows up.</div>
       </div>
-      <div class="card prompt-card">
-        <div class="prompt-label">A good weekend looks like</div>
-        <div class="prompt-answer">An early hike, something good to eat, a coffee shop to decompress, and easy time with people I actually like being around.</div>
-      </div>
+
       <div class="card prompt-card">
         <div class="prompt-label">On a typical week you'll find me</div>
-        <div class="prompt-answer">Hiking a new trail, playing pickup soccer, trying a local brewery, or taking a spontaneous drive into the mountains.</div>
+        <div class="prompt-answer">Shipping a new feature, catching a live set in the Mission, or convincing friends to try a spot none of us have heard of yet.</div>
       </div>
+
+      <div class="card prompt-card">
+        <div class="prompt-label">I go crazy for</div>
+        <div class="prompt-answer">A great playlist, a city that feels alive at 1am, a problem worth solving, and people who show up with real energy and zero pretense.</div>
+      </div>
+
       <div class="card prompt-card">
         <div class="prompt-label">Green flags I look for</div>
-        <div class="prompt-answer small">Someone grounded, emotionally stable, and who genuinely enjoys being outside. I'm drawn to people who find meaning in shared experiences over loud social scenes.</div>
+        <div class="prompt-answer small">Someone who's genuinely excited about life — their own life. Curious, a little spontaneous, and not afraid to say yes to something last-minute.</div>
       </div>
+
       <div class="card prompt-card">
         <div class="prompt-label">Dating me will look like</div>
-        <div class="prompt-answer small">Morning hikes, cooking dinner together, low-key brewery evenings, and road trips with no strict itinerary. Steady, real, and easy to be around.</div>
+        <div class="prompt-answer small">Spontaneous drives across the Bay, late-night ramen after a concert, building something dumb and fun together on a weekend, and never running out of things to talk about.</div>
       </div>
+
     </div>
   </div>
 </div>
@@ -138,7 +149,7 @@
     </div>
     <button class="action-like">
       <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-      Like Ethan Bennett
+      Like John Doe
     </button>
     <div class="action-star">
       <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
