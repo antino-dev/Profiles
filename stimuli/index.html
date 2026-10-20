@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stimuli Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #F5F5F4; font-family: 'Inter', system-ui, sans-serif; color: #292524; padding: 24px 16px 48px; }
+  h1 { font-size: 18px; font-weight: 600; color: #1C1917; }
+  .intro { font-size: 13px; color: #57534E; margin-top: 4px; }
+  .person-row { margin-top: 28px; }
+  .person-row h2 { font-size: 14px; font-weight: 600; color: #1C1917; margin-bottom: 10px; }
+  .grid { display: flex; gap: 24px; align-items: flex-start; }
+  .cell { flex-shrink: 0; }
+  .cell-label { font-size: 12px; font-weight: 600; color: #1C1917; margin-bottom: 2px; }
+  .cell-meta { font-size: 11px; color: #57534E; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+  .viewport { overflow: hidden; background: #FFFFFF; outline: 1px solid #D6D3D1; }
+  .viewport iframe { width: 390px; height: 400px; border: 0; display: block; transform-origin: top left; }
+  table { margin-top: 32px; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; background: #FFFFFF; }
+  th, td { border: 1px solid #E7E5E4; padding: 6px 12px; text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  th { font-weight: 600; background: #FAFAF9; }
+</style>
+</head>
+<body>
+<h1>Stimuli review</h1>
+<p class="intro">Profile screen (DH=0) and avatar screen (DH=1, review=0/1) for each context. Each frame is the live page at 390px, scaled to fit this window. Heights are the unscaled frame heights in CSS pixels.</p>
+<div id="rows"></div>
+<table id="summary" aria-label="Frame heights">
+  <thead><tr><th>Person</th><th>Dating profile</th><th>Dating avatar r0</th><th>Dating avatar r1</th><th>Hiring profile</th><th>Hiring avatar r0</th><th>Hiring avatar r1</th><th>Diff profile</th><th>Diff avatar r0</th><th>Diff avatar r1</th></tr></thead>
+  <tbody></tbody>
+</table>
+<pre id="results" hidden></pre>
+
+<script>
+  const PEOPLE = [['ethan', 'Ethan photo'], ['olivia', 'Olivia photo'], ['john', 'Tutorial (John)']];
+  const CONDS = [
+    ['dating-profile', 'Dating profile', 'relation=1&DH=0'],
+    ['dating-avatar-r0', 'Dating avatar, review=0', 'relation=1&DH=1&review=0'],
+    ['dating-avatar-r1', 'Dating avatar, review=1', 'relation=1&DH=1&review=1'],
+    ['freelance-profile', 'Hiring profile', 'relation=0&DH=0'],
+    ['freelance-avatar-r0', 'Hiring avatar, review=0', 'relation=0&DH=1&review=0'],
+    ['freelance-avatar-r1', 'Hiring avatar, review=1', 'relation=0&DH=1&review=1']
+  ];
+  const GAP = 24, W = 390;
+  const heights = {};   // "file?query" -> px
+  const cells = {};
+
+  PEOPLE.forEach(([p, label]) => {
+    const row = document.createElement('section'); row.className = 'person-row';
+    row.innerHTML = '<h2></h2><div class="grid"></div>';
+    row.querySelector('h2').textContent = label;
+    CONDS.forEach(([id, name, q]) => {
+      const key = p + '.html?' + q;
+      const cell = document.createElement('div'); cell.className = 'cell';
+      cell.innerHTML = '<p class="cell-label"></p><p class="cell-meta">measuring…</p><div class="viewport"><iframe></iframe></div>';
+      cell.querySelector('.cell-label').textContent = name;
+      const f = cell.querySelector('iframe');
+      f.title = label + ', ' + name; f.src = key;
+      row.querySelector('.grid').appendChild(cell);
+      cells[key] = cell;
+    });
+    document.getElementById('rows').appendChild(row);
+  });
+
+  function scale() { return Math.min(1, (document.body.clientWidth - (CONDS.length - 1) * GAP) / (CONDS.length * W)); }
+  function layout() {
+    const s = scale();
+    Object.entries(cells).forEach(([key, cell]) => {
+      const h = heights[key] || 400;
+      const f = cell.querySelector('iframe');
+      f.style.height = h + 'px';
+      f.style.transform = 'scale(' + s + ')';
+      const vp = cell.querySelector('.viewport');
+      vp.style.width = (W * s) + 'px'; vp.style.height = (h * s) + 'px';
+    });
+  }
+
+  function renderSummary() {
+    const tb = document.querySelector('#summary tbody'); tb.innerHTML = '';
+    const lines = [];
+    PEOPLE.forEach(([p, label]) => {
+      const h = CONDS.map(([, , q]) => heights[p + '.html?' + q]);
+      const d = (a, b) => (a && b) ? Math.abs(a - b) + ' px' : '…';
+      const tr = document.createElement('tr');
+      [label, ...h.map(x => x ? x + ' px' : '…'), d(h[0], h[3]), d(h[1], h[4]), d(h[2], h[5])].forEach(v => { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); });
+      tb.appendChild(tr);
+      lines.push(p + ': ' + CONDS.map(([id], i) => id + '=' + h[i]).join(' '));
+    });
+    document.getElementById('results').textContent = lines.join('\n');
+  }
+
+  window.addEventListener('message', e => {
+    const m = e.data; if (!m || !m.stimulus || !cells[m.stimulus]) return;
+    heights[m.stimulus] = m.height;
+    cells[m.stimulus].querySelector('.cell-meta').textContent = m.height + ' px tall';
+    layout(); renderSummary();
+  });
+  window.addEventListener('resize', layout);
+  layout(); renderSummary();
+</script>
+</body>
+</html>
