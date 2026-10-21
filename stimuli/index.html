@@ -29,7 +29,7 @@
 <p class="intro">Profile screen (DH=0) and avatar screen (DH=1, review=0/1) for each context. Each frame is the live page at 390px, scaled to fit this window. Heights are the unscaled frame heights in CSS pixels.</p>
 <div id="rows"></div>
 <table id="summary" aria-label="Frame heights">
-  <thead><tr><th>Person</th><th>Dating profile</th><th>Dating avatar r0</th><th>Dating avatar r1</th><th>Hiring profile</th><th>Hiring avatar r0</th><th>Hiring avatar r1</th><th>Diff profile</th><th>Diff avatar r0</th><th>Diff avatar r1</th></tr></thead>
+  <thead><tr><th>Person</th><th>Dating profile</th><th>Dating avatar r0</th><th>Dating avatar r1</th><th>Hiring profile</th><th>Hiring avatar r0</th><th>Hiring avatar r1</th><th>Tutor profile</th><th>Tutor avatar r0</th><th>Tutor avatar r1</th><th>Range profile</th><th>Range avatar r0</th><th>Range avatar r1</th></tr></thead>
   <tbody></tbody>
 </table>
 <pre id="results" hidden></pre>
@@ -42,7 +42,10 @@
     ['dating-avatar-r1', 'Dating avatar, review=1', 'relation=1&DH=1&review=1'],
     ['freelance-profile', 'Hiring profile', 'relation=0&DH=0'],
     ['freelance-avatar-r0', 'Hiring avatar, review=0', 'relation=0&DH=1&review=0'],
-    ['freelance-avatar-r1', 'Hiring avatar, review=1', 'relation=0&DH=1&review=1']
+    ['freelance-avatar-r1', 'Hiring avatar, review=1', 'relation=0&DH=1&review=1'],
+    ['tutoring-profile', 'Tutor profile', 'relation=2&DH=0'],
+    ['tutoring-avatar-r0', 'Tutor avatar, review=0', 'relation=2&DH=1&review=0'],
+    ['tutoring-avatar-r1', 'Tutor avatar, review=1', 'relation=2&DH=1&review=1']
   ];
   const GAP = 24, W = 390;
   const heights = {};   // "file?query" -> px
@@ -83,9 +86,10 @@
     const lines = [];
     PEOPLE.forEach(([p, label]) => {
       const h = CONDS.map(([, , q]) => heights[p + '.html?' + q]);
-      const d = (a, b) => (a && b) ? Math.abs(a - b) + ' px' : '…';
+      // Spread across the three contexts for the same screen.
+      const d = (...xs) => xs.every(Boolean) ? (Math.max(...xs) - Math.min(...xs)) + ' px' : '…';
       const tr = document.createElement('tr');
-      [label, ...h.map(x => x ? x + ' px' : '…'), d(h[0], h[3]), d(h[1], h[4]), d(h[2], h[5])].forEach(v => { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); });
+      [label, ...h.map(x => x ? x + ' px' : '…'), d(h[0], h[3], h[6]), d(h[1], h[4], h[7]), d(h[2], h[5], h[8])].forEach(v => { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); });
       tb.appendChild(tr);
       lines.push(p + ': ' + CONDS.map(([id], i) => id + '=' + h[i]).join(' '));
     });

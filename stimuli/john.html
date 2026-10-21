@@ -8,8 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <!--
-  Experimental stimulus. One shell, two contexts, two screens:
+  Experimental stimulus. One shell, three contexts, two screens:
     ?relation=1  dating (default)               ?relation=0  freelancer hiring
+    ?relation=2  online language (Spanish) tutoring
     ?DH=0        profile screen (default)       ?DH=1        digital avatar screen
     ?review=0    avatar built from uploaded content with consent (default)
     ?review=1    adds: the person reviewed and verified the avatar
@@ -132,7 +133,7 @@
       <div class="video">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
         <span class="video-label" id="videoLabel"></span>
-        <span class="video-note">[ same build in both contexts ]</span>
+        <span class="video-note">[ same build in all contexts ]</span>
         <div class="self-view">You</div>
       </div>
       <div class="call-controls">
@@ -190,6 +191,21 @@
         ['Maintenance · Restaurant group', 'Ongoing updates and fixes for an online ordering app.']
       ],
       questions: ['How do you usually start a project?', 'Tell me about the fitness studio app.', 'What is your availability?']
+    },
+    tutoring: {
+      app: 'Talkwell',
+      name: 'John D.',
+      subtitle: 'Spanish tutor · San Francisco, CA',
+      chips: ['4 yrs teaching', '$35/lesson', 'Conversation', 'Beginner friendly', 'Available now'],
+      aboutHeading: 'About my lessons',
+      about: 'I grew up in Sacramento speaking Spanish with my mom\'s side of the family and have been tutoring online for four years. Most of my students are adults who know some basics but freeze up in real conversation. We spend most of each lesson just talking, and I keep one shared doc of new words so you can see exactly what you have picked up.',
+      detailHeading: 'How lessons work',
+      cards: [
+        ['Trial lesson · 30 min', 'We chat a bit, I get a sense of your level, and we set one goal for the next two months.'],
+        ['Weekly lesson · 60 min', 'Mostly speaking practice, built around topics you pick.'],
+        ['Between lessons', 'A short voice note from me with a few phrases to try out that week.']
+      ],
+      questions: ['What is a lesson with you like?', 'How do you help nervous beginners?', 'What is your availability?']
     }
   };
   /* ===== end PERSON ===== */
@@ -201,14 +217,15 @@
 
   const params = new URLSearchParams(location.search);
   const getParam = k => params.get(k) ?? params.get(k.toLowerCase()) ?? params.get(k.toUpperCase());
-  const isDating = getParam('relation') !== '0';
+  const relation = ['0', '2'].includes(getParam('relation')) ? getParam('relation') : '1';
+  const isDating = relation === '1';
   const showAvatar = getParam('DH') === '1';
   const reviewed = getParam('review') === '1';
-  const c = isDating ? PERSON.dating : PERSON.freelance;
+  const c = { '0': PERSON.freelance, '1': PERSON.dating, '2': PERSON.tutoring }[relation];
   const $ = id => document.getElementById(id);
 
   document.title = c.app;
-  document.body.dataset.relation = isDating ? '1' : '0';
+  document.body.dataset.relation = relation;
   document.body.dataset.dh = showAvatar ? '1' : '0';
   document.body.dataset.review = reviewed ? '1' : '0';
 
