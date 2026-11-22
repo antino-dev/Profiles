@@ -63,13 +63,9 @@
   .avatar-band { background: var(--band); border-bottom: 1px solid var(--border); padding: 20px; }
   .avatar-heading { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; color: var(--ink); }
   .avatar-heading h2 { margin: 0; }
-  .video { position: relative; height: 230px; border-radius: 12px; background: var(--video); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted); }
-  .video-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-  .video-note { font-size: 12px; color: var(--muted); }
-  .self-view { position: absolute; right: 10px; bottom: 10px; width: 74px; height: 54px; border-radius: 8px; background: #C9C5C1; border: 1px solid #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--body); }
-  .call-controls { display: flex; justify-content: center; gap: 16px; margin-top: 14px; }
-  .round-btn { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #FFFFFF; border: 1px solid var(--border); color: var(--ink); }
-  .round-btn.end { background: var(--ink); border-color: var(--ink); color: #FFFFFF; }
+  /* Live Digital Human (DH=1). Width follows the band (350px in the 390px frame); tune height here. */
+  .video { position: relative; height: 460px; border-radius: 12px; background: var(--video); overflow: hidden; }
+  .video iframe { display: block; width: 100%; height: 100%; border: 0; }
   .disclosure { font-size: 12px; line-height: 1.6; color: var(--muted); margin-top: 16px; }
   .try-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-top: 16px; margin-bottom: 8px; }
   .suggestions { display: flex; flex-direction: column; gap: 8px; }
@@ -131,18 +127,8 @@
         <h2 class="section-heading" id="avatarHeading" style="margin-bottom:0;">Digital avatar</h2>
       </div>
       <div class="video">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
-        <span class="video-label" id="videoLabel"></span>
-        <span class="video-note">[ same build in all contexts ]</span>
-        <div class="self-view">You</div>
-      </div>
-      <div class="call-controls">
-        <button type="button" class="round-btn" aria-label="Mute microphone">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
-        </button>
-        <button type="button" class="round-btn end" aria-label="End conversation">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
-        </button>
+        <!-- src is set by the script only when DH=1, so DH=0 never loads the service or asks for camera/mic. -->
+        <iframe id="dhFrame" title="" allow="camera; microphone; autoplay; fullscreen" allowfullscreen></iframe>
       </div>
       <p class="disclosure" id="disclosure"></p>
       <p class="try-label">Try asking</p>
@@ -162,6 +148,7 @@
   const PERSON = {
     photo: '../olivia/olivia_photo.jpg',
     first: 'Alex',
+    dhAvatar: 'female',   // Digital Human avatar for ?DH=1
     dating: {
       app: 'Linden',
       name: 'Alex, 32',
@@ -215,6 +202,17 @@
     save: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'
   };
 
+  /* Digital Human service (DH=1). The service authenticates via the api_key URL parameter,
+     so the key necessarily reaches the browser; it is kept in this one place.
+     ?id=<participant id> overrides the default session id. */
+  const DH_SERVICE = {
+    base: 'https://dating-dh-app-gdicy.ondigitalocean.app/embed',
+    apiKey: '61NWsulQBYz6jJ2RgyPgMwB2ik90s544Z2vBoharvB',
+    defaultId: 'test123',
+    debug: 'false',
+    timeout: '180'
+  };
+
   const params = new URLSearchParams(location.search);
   const getParam = k => params.get(k) ?? params.get(k.toLowerCase()) ?? params.get(k.toUpperCase());
   const relation = ['0', '2'].includes(getParam('relation')) ? getParam('relation') : '1';
@@ -252,7 +250,16 @@
     $('avatarThumb').src = PERSON.photo;
     $('avatarName').textContent = c.name;
     $('avatarSubtitle').textContent = c.subtitle;
-    $('videoLabel').textContent = 'Live avatar of ' + n;
+    const dhUrl = new URL(DH_SERVICE.base);
+    dhUrl.search = new URLSearchParams({
+      avatar: PERSON.dhAvatar,
+      id: getParam('id') || DH_SERVICE.defaultId,
+      debug: DH_SERVICE.debug,
+      timeout: DH_SERVICE.timeout,
+      api_key: DH_SERVICE.apiKey
+    }).toString();
+    $('dhFrame').title = 'Live avatar of ' + n;
+    $('dhFrame').src = dhUrl.toString();
     // review=1 adds exactly one sentence; everything else in the disclosure is identical.
     $('disclosure').textContent =
       'An AI representation of ' + n + ', created with ' + n + '’s consent from the photos and profile content ' + n + ' uploaded. ' +
