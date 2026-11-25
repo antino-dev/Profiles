@@ -9,8 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <!--
   Experimental stimulus. One shell, three contexts, two screens:
-    ?relation=1  dating (default)               ?relation=0  freelancer hiring
-    ?relation=2  online language (Spanish) tutoring
+    ?relation=1  dating (default)               ?relation=0  online language (Spanish) tutoring
+    ?relation=2  freelancer hiring
     ?DH=0        profile screen (default)       ?DH=1        digital avatar screen
     ?review=0    avatar built from uploaded content with consent (default)
     ?review=1    adds: the person reviewed and verified the avatar
@@ -206,14 +206,14 @@
 
   /* Digital Human service (DH=1). The service authenticates via the api_key URL parameter,
      so the key necessarily reaches the browser; it is kept in this one place.
-     Persona = PERSON.dhGender x relation (1 dating, 2 tutoring). No match = no DH, never a default.
+     Persona = PERSON.dhGender x relation (1 dating, 0 tutoring). No match = no DH, never a default.
      FORWARD lists the parameters copied unchanged from this page's URL to the DH URL. */
   const DH_SERVICE = {
     base: 'https://dh-embed-fswov.ondigitalocean.app/embed',
     apiKey: 'XKSN7O7RNrQvbm273p7MHaOwnnXspW2NC95BQ4Tmsw7OqM8K',
     personas: {
-      female: { '1': 'pd5e1cc8c460', '2': 'pf6343bcae10' },
-      male:   { '1': 'p5ed9736c29e', '2': 'p9d711586db0' }
+      female: { '1': 'pd5e1cc8c460', '0': 'pf6343bcae10' },
+      male:   { '1': 'p5ed9736c29e', '0': 'p9d711586db0' }
     },
     forward: ['meta_participant_id', 'conversational_context']
   };
@@ -224,7 +224,7 @@
   const isDating = relation === '1';
   const showAvatar = getParam('DH') === '1';
   const reviewed = getParam('review') === '1';
-  const c = { '0': PERSON.freelance, '1': PERSON.dating, '2': PERSON.tutoring }[relation];
+  const c = { '0': PERSON.tutoring, '1': PERSON.dating, '2': PERSON.freelance }[relation];
   const $ = id => document.getElementById(id);
 
   document.title = c.app;
