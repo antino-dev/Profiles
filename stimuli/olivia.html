@@ -14,6 +14,7 @@
     ?DH=0        profile screen (default)       ?DH=1        digital avatar screen
     ?review=0    avatar built from uploaded content with consent (default)
     ?review=1    adds: the person reviewed and verified the avatar
+    ?meta_participant_id, ?conversational_context  (from Qualtrics; forwarded unchanged to the DH)
   Only the PERSON block in the script differs between ethan/olivia/john.
 -->
 <style>
@@ -66,6 +67,7 @@
   /* Live Digital Human (DH=1). Width follows the band (350px in the 390px frame); tune height here. */
   .video { position: relative; height: 460px; border-radius: 12px; background: var(--video); overflow: hidden; }
   .video iframe { display: block; width: 100%; height: 100%; border: 0; }
+  .dh-unavailable { height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center; font-size: 13px; line-height: 1.5; color: var(--muted); }
   .disclosure { font-size: 12px; line-height: 1.6; color: var(--muted); margin-top: 16px; }
   .try-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-top: 16px; margin-bottom: 8px; }
   .suggestions { display: flex; flex-direction: column; gap: 8px; }
@@ -148,7 +150,7 @@
   const PERSON = {
     photo: '../olivia/olivia_photo.jpg',
     first: 'Alex',
-    dhAvatar: 'female',   // Digital Human avatar for ?DH=1
+    dhGender: 'female',   // Digital Human persona gender for ?DH=1 (null = no DH on this page)
     dating: {
       app: 'Linden',
       name: 'Alex, 32',
@@ -204,13 +206,16 @@
 
   /* Digital Human service (DH=1). The service authenticates via the api_key URL parameter,
      so the key necessarily reaches the browser; it is kept in this one place.
-     ?id=<participant id> overrides the default session id. */
+     Persona = PERSON.dhGender x relation (1 dating, 2 tutoring). No match = no DH, never a default.
+     FORWARD lists the parameters copied unchanged from this page's URL to the DH URL. */
   const DH_SERVICE = {
-    base: 'https://dating-dh-app-gdicy.ondigitalocean.app/embed',
-    apiKey: '61NWsulQBYz6jJ2RgyPgMwB2ik90s544Z2vBoharvB',
-    defaultId: 'test123',
-    debug: 'false',
-    timeout: '180'
+    base: 'https://dh-embed-fswov.ondigitalocean.app/embed',
+    apiKey: 'XKSN7O7RNrQvbm273p7MHaOwnnXspW2NC95BQ4Tmsw7OqM8K',
+    personas: {
+      female: { '1': 'pd5e1cc8c460', '2': 'pf6343bcae10' },
+      male:   { '1': 'p5ed9736c29e', '2': 'p9d711586db0' }
+    },
+    forward: ['meta_participant_id', 'conversational_context']
   };
 
   const params = new URLSearchParams(location.search);
@@ -250,16 +255,25 @@
     $('avatarThumb').src = PERSON.photo;
     $('avatarName').textContent = c.name;
     $('avatarSubtitle').textContent = c.subtitle;
-    const dhUrl = new URL(DH_SERVICE.base);
-    dhUrl.search = new URLSearchParams({
-      avatar: PERSON.dhAvatar,
-      id: getParam('id') || DH_SERVICE.defaultId,
-      debug: DH_SERVICE.debug,
-      timeout: DH_SERVICE.timeout,
-      api_key: DH_SERVICE.apiKey
-    }).toString();
-    $('dhFrame').title = 'Live avatar of ' + n;
-    $('dhFrame').src = dhUrl.toString();
+    // relation must be given explicitly here: the page's silent default to dating must not pick a persona.
+    const persona = (DH_SERVICE.personas[PERSON.dhGender] || {})[getParam('relation')];
+    if (persona) {
+      const dhUrl = new URL(DH_SERVICE.base);
+      dhUrl.searchParams.set('persona', persona);
+      dhUrl.searchParams.set('api_key', DH_SERVICE.apiKey);
+      DH_SERVICE.forward.forEach(k => {
+        const v = params.get(k);
+        if (v !== null && v.trim() !== '') dhUrl.searchParams.set(k, v);
+        else console.warn('Digital Human: URL parameter "' + k + '" is missing; not forwarded.');
+      });
+      $('dhFrame').title = 'Live avatar of ' + n;
+      $('dhFrame').src = dhUrl.toString();
+    } else {
+      console.error('Digital Human: no persona for gender=' + PERSON.dhGender + ', relation=' + getParam('relation'));
+      const msg = document.createElement('p'); msg.className = 'dh-unavailable';
+      msg.textContent = 'The live avatar is not available for this page.';
+      $('dhFrame').replaceWith(msg);
+    }
     // review=1 adds exactly one sentence; everything else in the disclosure is identical.
     $('disclosure').textContent =
       'An AI representation of ' + n + ', created with ' + n + '’s consent from the photos and profile content ' + n + ' uploaded. ' +
