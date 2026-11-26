@@ -15,6 +15,7 @@
     ?review=0    avatar built from uploaded content with consent (default)
     ?review=1    adds: the person reviewed and verified the avatar
     ?meta_participant_id, ?conversational_context  (from Qualtrics; forwarded unchanged to the DH)
+    ?APIkey      DH service key (from Qualtrics; sent to the DH as api_key, never stored in this file)
   Only the PERSON block in the script differs between ethan/olivia/john.
 -->
 <style>
@@ -204,13 +205,12 @@
     save: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'
   };
 
-  /* Digital Human service (DH=1). The service authenticates via the api_key URL parameter,
-     so the key necessarily reaches the browser; it is kept in this one place.
+  /* Digital Human service (DH=1). The service authenticates via its api_key URL parameter.
+     The key is not stored here: it comes from this page's ?APIkey= parameter (set by Qualtrics).
      Persona = PERSON.dhGender x relation (1 dating, 0 tutoring). No match = no DH, never a default.
      FORWARD lists the parameters copied unchanged from this page's URL to the DH URL. */
   const DH_SERVICE = {
     base: 'https://dh-embed-fswov.ondigitalocean.app/embed',
-    apiKey: 'XKSN7O7RNrQvbm273p7MHaOwnnXspW2NC95BQ4Tmsw7OqM8K',
     personas: {
       female: { '1': 'pd5e1cc8c460', '0': 'pf6343bcae10' },
       male:   { '1': 'p5ed9736c29e', '0': 'p9d711586db0' }
@@ -257,10 +257,11 @@
     $('avatarSubtitle').textContent = c.subtitle;
     // relation must be given explicitly here: the page's silent default to dating must not pick a persona.
     const persona = (DH_SERVICE.personas[PERSON.dhGender] || {})[getParam('relation')];
-    if (persona) {
+    const apiKey = (getParam('APIkey') || '').trim();
+    if (persona && apiKey) {
       const dhUrl = new URL(DH_SERVICE.base);
       dhUrl.searchParams.set('persona', persona);
-      dhUrl.searchParams.set('api_key', DH_SERVICE.apiKey);
+      dhUrl.searchParams.set('api_key', apiKey);
       DH_SERVICE.forward.forEach(k => {
         const v = params.get(k);
         if (v !== null && v.trim() !== '') dhUrl.searchParams.set(k, v);
@@ -269,7 +270,8 @@
       $('dhFrame').title = 'Live avatar of ' + n;
       $('dhFrame').src = dhUrl.toString();
     } else {
-      console.error('Digital Human: no persona for gender=' + PERSON.dhGender + ', relation=' + getParam('relation'));
+      console.error(persona ? 'Digital Human: URL parameter "APIkey" is missing.'
+        : 'Digital Human: no persona for gender=' + PERSON.dhGender + ', relation=' + getParam('relation'));
       const msg = document.createElement('p'); msg.className = 'dh-unavailable';
       msg.textContent = 'The live avatar is not available for this page.';
       $('dhFrame').replaceWith(msg);
